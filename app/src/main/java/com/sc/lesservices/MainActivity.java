@@ -14,7 +14,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity implements ServiceCallbacks {
 
     private MonService monService;
-
+    // créer un object ServiceConnection pour communiquer avec le service
+    // onServiceConnected() est lancé quand la connection est établie
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -32,22 +33,39 @@ public class MainActivity extends AppCompatActivity implements ServiceCallbacks 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+        /*
+        // lancer le service directement
+        Intent intent_service = new Intent(this, MonService.class);
+        startService(intent_service);
+        */
     }
 
+    // quand l'application et devenu vésible,
+    // on lancer le service à travers un Intent
+
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         Intent intent_service = new Intent(this, MonService.class);
         bindService(intent_service, serviceConnection, Context.BIND_AUTO_CREATE);
+
     }
 
+    // quand l'activité devient unvisible,
+    // on relache le lien avec le service
     @Override
     protected void onStop() {
         super.onStop();
-            // Unbind from service
-            monService.setCallbacks(null); // unregister
-            unbindService(serviceConnection);
+        // Unbind from service
+        monService.setCallbacks(null); // unregister
+        unbindService(serviceConnection);
     }
+
+    // cette méthode permet de mettre à jour l'interface de l'activité
+    // elle sera appelé par le service quand le coordonnées GPS sont récupérées.
 
     @Override
     public void updateActivityUI() {
@@ -56,5 +74,7 @@ public class MainActivity extends AppCompatActivity implements ServiceCallbacks 
             ((TextView) findViewById(R.id.longitude)).setText("" + monService.longitude);
         }
     }
+
+
 
 }

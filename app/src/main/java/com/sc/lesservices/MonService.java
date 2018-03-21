@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 public class MonService extends Service {
 
@@ -50,7 +51,6 @@ public class MonService extends Service {
 
         // Acquire a reference to the system Location Manager
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
         // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 0, locationListener);
 
@@ -64,6 +64,10 @@ public class MonService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+
+        Log.i(this.getClass().getName(),"flags=" + flags + " StartId ="+ startId);
+
+
         return START_STICKY;
     }
 
